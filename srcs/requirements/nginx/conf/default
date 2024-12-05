@@ -1,0 +1,43 @@
+server {
+    # Listen on port 80 for IPv4 and IPv6
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    # Listen on port 443 for SSL connections
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+
+    # SSL certificate settings
+    ssl_certificate /.secrets/cert.crt;
+    ssl_certificate_key /.secrets/key.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    root /var/www/html;
+
+    autoindex on;
+    index index.php index.html;
+	server_name smoreron.42.fr;
+
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~\.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass wordpress:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        expires max;
+        log_not_found off;
+    }
+
+    location /healthcheck {
+        access_log off;
+        return 200;
+    }
+}
