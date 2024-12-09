@@ -6,7 +6,23 @@ services:
       context: ./requirements/nginx/
       dockerfile: Dockerfile
     ports:
-      - "443:443" # HTTPS only
+      - "443:443"
+    volumes:
+      - wp-volume:/var/www/html
+    networks:
+      - my-network
+    restart: unless-stopped
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build:
+      context: ./requirements/wordpress/
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
     volumes:
       - wp-volume:/var/www/html
     networks:
@@ -26,3 +42,34 @@ services:
     networks:
       - my-network
     restart: unless-stopped
+
+  ftp-server:
+    build: requirements/bonus/ftp-server
+    container_name: ftp-server
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - wp-volume:/var/www/html
+    networks:
+     - my-network
+    restart: unless-stopped
+    environment:
+      FTP_USR: ${FTP_USR}
+      FTP_PWD: ${FTP_PWD}
+
+volumes:
+  wp-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/smoreron/data/wordpress
+  db-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/smoreron/data/mariadb
+
+networks:
+  my-network:
+    driver: bridge
