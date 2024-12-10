@@ -19,7 +19,11 @@ build:
 
 # Start the project in detached mode
 up: build
+<<<<<<< HEAD
 	sudo docker compose -f ./srcs/docker-compose.yml up -d
+=======
+	docker compose -f ./srcs/docker-compose.yml up -d
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
 
 # Stop and remove all containers and volumes
 down:
@@ -128,4 +132,8 @@ re: fclean all
 
 
 # Define all targets as phony to avoid conflicts with files of the same name
+<<<<<<< HEAD
 .PHONY: all build up down ps logs logs_wordpress logs_nginx logs_mariadb follow clean prune config restart exec version stats networks
+=======
+.PHONY: all build up down ps logs logs_wordpress logs_nginx logs_mariadb follow clean prune config restart exec version stats networks
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8

@@ -9,6 +9,8 @@ services:
       - "443:443"
     volumes:
       - wp-volume:/var/www/html
+<<<<<<< HEAD
+=======
     networks:
       - my-network
     restart: unless-stopped
@@ -25,10 +27,41 @@ services:
       - .env
     volumes:
       - wp-volume:/var/www/html
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
     networks:
       - my-network
     restart: unless-stopped
 
+<<<<<<< HEAD
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build:
+      context: ./requirements/wordpress/
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+    volumes:
+      - wp-volume:/var/www/html
+=======
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    build:
+      context: ./requirements/mariadb/
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - db-volume:/var/lib/mysql
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
+    networks:
+      - my-network
+    restart: unless-stopped
+
+<<<<<<< HEAD
   mariadb:
     container_name: mariadb
     image: mariadb
@@ -57,6 +90,22 @@ services:
   #   environment:
   #     FTP_USR: ${FTP_USR}
   #     FTP_PWD: ${FTP_PWD}
+=======
+  ftp-server:
+    build: requirements/bonus/ftp-server
+    container_name: ftp-server
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - wp-volume:/var/www/html
+    networks:
+     - my-network
+    restart: unless-stopped
+    environment:
+      FTP_USR: ${FTP_USR}
+      FTP_PWD: ${FTP_PWD}
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
 
 volumes:
   wp-volume:

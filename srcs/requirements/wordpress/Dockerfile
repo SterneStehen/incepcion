@@ -22,4 +22,8 @@ RUN chmod 755 /usr/local/bin/wp_script.sh
 # Placeholder command for testing
 RUN echo "Debugging placeholder: build stage complete" > /tmp/debug.log
 
+<<<<<<< HEAD
 CMD ["/bin/bash", "-c", "/usr/local/bin/wp_script.sh && php-fpm7.4 -F"]
+=======
+CMD ["/bin/bash", "-c", "/usr/local/bin/wp_script.sh && php-fpm7.4 -F"]
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8

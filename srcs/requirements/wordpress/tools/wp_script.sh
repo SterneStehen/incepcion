@@ -70,4 +70,8 @@ VALUES
 
 
     echo "Second user created successfully."
+<<<<<<< HEAD
 fi
+=======
+fi
+>>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
