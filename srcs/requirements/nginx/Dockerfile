@@ -1,28 +1,33 @@
-# Используем базовый образ на основе Alpine Linux (версия 3.17 для обновлённости)
-FROM alpine:3.17
+# Use the official Debian Bullseye image
+FROM debian:bullseye
 
-# Обновляем системные репозитории и устанавливаем необходимые пакеты
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache nginx openssl curl bash
+# Update package lists and install Nginx and OpenSSL
+RUN apt-get update && \
+    apt-get install -y nginx openssl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir /.secrets/ && \
+    echo "Nginx and OpenSSL installed."
 
-RUN mkdir -p /etc/nginx/ssl && \
-    openssl req -x509 -nodes -days 365 \
-    -subj "/CN=localhost" \
-    -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
+# Generate SSL certificates using OpenSSL
+RUN openssl req -x509 -nodes -days 1 -newkey rsa:4096 \
+    -keyout /.secrets/key.key \
+    -out /.secrets/cert.crt \
+    -sha256 \
+    -subj "/C=UA/ST=Odessa/L=Odessa/O=SamsungPc/OU=smoreron/CN=smoreron" && \
+    echo "SSL certificates generated."
 
-# Копируем пользовательскую конфигурацию NGINX
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy the Nginx default configuration file
+COPY ./conf/default /etc/nginx/sites-available/
 
-# Создание папки для хранения статических файлов (новая функция)
-RUN mkdir -p /var/www/static && \
-    echo "<h1>Welcome to Smoreron Server</h1>" > /var/www/static/index.html
+# Print a configuration complete message
+RUN echo "Configuration complete."
 
-# Открываем порты для HTTP и HTTPS соединений
-EXPOSE 80 443
+# Expose port 443 for HTTPS
+EXPOSE 443
 
-# Добавляем рабочую директорию
-WORKDIR /var/www/
+# Set the entrypoint to Nginx and run it in the foreground
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
-# Запуск NGINX в режиме без демона
-CMD ["nginx", "-g", "daemon off;"]
+# Use the default Nginx configuration file
+CMD ["-c", "/etc/nginx/nginx.conf"]
