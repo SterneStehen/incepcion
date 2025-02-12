@@ -26,8 +26,4 @@ if [ -d "$DB_PATH" ]; then
 else
     mysql_install_db --user=mysql --ldata=/var/lib/mysql
     mysqld
-<<<<<<< HEAD
 fi
-=======
-fi
->>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8

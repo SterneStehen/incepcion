@@ -19,11 +19,7 @@ build:
 
 # Start the project in detached mode
 up: build
-<<<<<<< HEAD
 	sudo docker compose -f ./srcs/docker-compose.yml up -d
-=======
-	docker compose -f ./srcs/docker-compose.yml up -d
->>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
 
 # Stop and remove all containers and volumes
 down:
@@ -83,9 +79,6 @@ restart:
 	docker compose -f ./srcs/docker-compose.yml restart
 
 # Run a command inside a running container
-exec:
-	docker compose -f ./srcs/docker-compose.yml exec
-
 # ---------------------------
 # Miscellaneous
 # ---------------------------
@@ -106,19 +99,11 @@ networks:
 # Check DB
 # ---------------------------
 
-# Проверить, что база данных запущена
-check-db:
-	docker exec mariadb mysql -u$(DB_USER) -p$(DB_PASSWORD) -e "SHOW DATABASES;" | grep $(DB_NAME) || (echo 'Database $(DB_NAME) is empty or does not exist!' && exit 1)
+exec:
+	docker exec -it mariadb /bin/bash
+#mysql -u wordpress_user -p 
+# USE wordpressdb; SHOW TABLES; SHOW DATABASES;
 
-# Войти в базу данных
-db-shell:
-	docker exec -it mariadb mysql -u$(DB_USER) -p$(DB_PASSWORD)
-
-# Полная проверка (запуск проверки базы и других шагов)
-test:
-	@echo "Running database checks..."
-	@make check-db
-	@echo "Database is not empty. Test passed!"
 
 
 # ---------------------------
@@ -132,8 +117,4 @@ re: fclean all
 
 
 # Define all targets as phony to avoid conflicts with files of the same name
-<<<<<<< HEAD
 .PHONY: all build up down ps logs logs_wordpress logs_nginx logs_mariadb follow clean prune config restart exec version stats networks
-=======
-.PHONY: all build up down ps logs logs_wordpress logs_nginx logs_mariadb follow clean prune config restart exec version stats networks
->>>>>>> a19079628eeaa2242d616adaaee71094910cd0c8
